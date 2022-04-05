@@ -9,7 +9,7 @@ class ChatService {
     var personsIds: Int = 0
 
     fun unreadChatsNumber(): Int {
-        var count: Int = chatList.count { it.getNumberUnread() > 0 }
+        var count: Int = chatList.asSequence().count { it.getNumberUnread() > 0 }
 
         return count
     }
@@ -17,9 +17,9 @@ class ChatService {
     fun getChatsShortView(): List<String> {
         var chatsStrings: MutableList<String> = mutableListOf()
 
-        chatList.forEach {
+        chatList.asSequence().forEach {
             var chatShort: String =
-                "[${it.chatId.toString().padStart(4,'0')}] <${"%15s".format(it.chatName)}>:" +
+                "[${it.chatId.toString().padStart(4, '0')}] <${"%15s".format(it.chatName)}>:" +
                         " ${"%30s".format(it.getLastMessage()?.text)}"
 
             chatsStrings.add(chatShort)
@@ -35,7 +35,7 @@ class ChatService {
     fun sendMessage(person: ChatPerson, text: String): ChatMessage? {
         var chat = chatList.find { it.addressee.personId == person.personId }
 
-        if (chat == null){ // Создаём новый чат
+        if (chat == null) { // Создаём новый чат
             chat = Chat(chatId = getNextChatId(), addressee = person)
             chatList += chat
         }
@@ -69,7 +69,7 @@ class ChatService {
 
         chat.deleteMessage(messageId)
 
-        if (chat.getNumberOfMessages() == 0){
+        if (chat.getNumberOfMessages() == 0) {
             this.deleteChat(chatId)
         }
 
@@ -111,10 +111,10 @@ class ChatService {
 
         var outStrings: MutableList<String> = mutableListOf()
 
-        chat.getAllMessages()?.forEach {
+        chat.getAllMessages()?.asSequence()?.forEach {
             var ms: String = "<${it.messageId.toString().padStart(4, '0')}>" +
-                    " [${if(it.direction == MessageDirection.incoming) "ВХД" else "ИСХ"}] " +
-                    "<${if (it.read)" " else "*"}> : ${it.text} "
+                    " [${if (it.direction == MessageDirection.incoming) "ВХД" else "ИСХ"}] " +
+                    "<${if (it.read) " " else "*"}> : ${it.text} "
             outStrings += ms
 
             it.read = true

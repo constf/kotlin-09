@@ -14,7 +14,7 @@ fun main() {
     cs.addPerson(ChatPerson(++personsCounter, "Рабочие вопросы"))
 
     // Создаём сообщения
-    cs.personsList.forEach {
+    cs.personsList.asSequence().forEach {
         //var random = Random(30)
         val noMessages = Random.nextInt(1, 30)
 
@@ -51,6 +51,8 @@ fun main() {
 
         do {
             val chatMessages = cs.getMessages(chatNumber)
+            if (chatMessages == null) break
+
             println("Номер   Признаки         Сообщения")
             println("=======================================================================================================")
             chatMessages?.forEach { println(it) }
@@ -77,7 +79,6 @@ fun main() {
             if (mdId == null) continue
 
             cs.deleteMessage(chatNumber, mdId)
-
         } while (userInput != "q")
 
     } while (userInput != "end")

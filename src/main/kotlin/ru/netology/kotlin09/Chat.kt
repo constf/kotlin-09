@@ -127,6 +127,10 @@ data class ChatMessage(
     val direction: MessageDirection,
     var read: Boolean = false,
     val timestamp: Int = System.currentTimeMillis().toInt(),
-)
+){
+    override fun hashCode(): Int {
+        return messageId.hashCode()
+    }
+}
 
 enum class MessageDirection { incoming, outgoing }
